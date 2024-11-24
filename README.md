@@ -1,5 +1,5 @@
 ## SSO 
 
-Auth: аутентификация и авторизация
-Permissions
-User info
+- Auth: аутентификация и авторизация
+- Permissions
+- User info
