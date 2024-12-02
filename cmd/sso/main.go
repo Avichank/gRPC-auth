@@ -7,11 +7,11 @@ import (
 	"os"
 )
 
-	const (
-		envLocal = "local"
-		envDev = "dev"
-		envProd = "prod"
-	)
+const (
+	envLocal = "local"
+	envDev   = "dev"
+	envProd  = "prod"
+)
 
 func main() {
 	// инициализировать объект конфига
@@ -19,9 +19,20 @@ func main() {
 
 	fmt.Println(cfg)
 
-
 	// инициализировать логгер
+	log := setupLogger(cfg.Env)
 
+	log.Info("starting app",
+		slog.String("env", cfg.Env),
+		slog.Any("cfg", cfg),
+		slog.Int("port", cfg.GRPC.Port),
+	)
+
+	log.Debug("debug message")
+
+	log.Error("error message")
+
+	log.Warn("warning message")
 
 	// инициализация приложения (app)
 
@@ -36,5 +47,15 @@ func setupLogger(env string) *slog.Logger {
 		log = slog.New(
 			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
 		)
+	case envDev:
+		log = slog.New(
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
+		)
+	case envProd:
+		log = slog.New(
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
+		)
 	}
+
+	return log
 }
